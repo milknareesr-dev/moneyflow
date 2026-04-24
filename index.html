@@ -1004,7 +1004,7 @@ function buildMoGrid(){
   document.getElementById('moGrid').innerHTML=MTH.map((m,i)=>`
     <div class="mo-cell">
       <div class="mo-cell-n">${m}</div>
-      <input class="mo-cell-inp" type="number" placeholder="0" value="${data[i].inc||''}" oninput="setMoInc(${i},+this.value)" inputmode="numeric"/>
+<div class="mo-cell-inp" style="color:var(--c1)">${fmt((data[i].inc||0)-(data[i].exp||0))}</div>
     </div>`).join('');
 }
 
