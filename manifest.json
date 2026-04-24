@@ -2,23 +2,21 @@
   "name": "MoneyFlow",
   "short_name": "MoneyFlow",
   "description": "จัดการเงิน · Track Your Budget",
-  "start_url": "/",
+  "start_url": "/moneyflow/",
   "display": "standalone",
   "background_color": "#f2ede7",
   "theme_color": "#2d5a3d",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
