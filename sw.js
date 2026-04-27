@@ -1,36 +1,40 @@
-const CACHE = 'moneyflow-v1';
+/* MoneyFlow — Service Worker v1 */
+const CACHE_NAME = 'moneyflow-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  'https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Mitr:wght@400;500;600&family=Nunito:wght@700;800;900&family=Kanit:wght@600;700;800&display=swap'
+  './',
+  './index.html',
 ];
 
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS.map(u => new Request(u, {mode:'no-cors'}))))
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(
+self.addEventListener('activate', event => {
+  event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
     )
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(cached => {
+self.addEventListener('fetch', event => {
+  // Only handle same-origin requests
+  if (!event.request.url.startsWith(self.location.origin)) return;
+  event.respondWith(
+    caches.match(event.request).then(cached => {
       if (cached) return cached;
-      return fetch(e.request).then(res => {
-        if (!res || res.status !== 200 || res.type === 'opaque') return res;
-        const resClone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, resClone));
-        return res;
-      }).catch(() => caches.match('/index.html'));
+      return fetch(event.request).then(response => {
+        // Cache successful GET responses
+        if (event.request.method === 'GET' && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return response;
+      }).catch(() => caches.match('./index.html')); // offline fallback
     })
   );
 });
